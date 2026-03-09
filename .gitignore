@@ -1,0 +1,54 @@
+# Flutter specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+frontend/build/
+frontend/.dart_tool/
+frontend/.packages
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+backend/venv/
+backend/__pycache__/
+
+# Database
+*.db
+*.sqlite3
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*.DS_Store
+
+# Static assets that are too large (if any)
+Gemini_Generated_Image_*.png
+yasamizi.png
+bck.jpg
