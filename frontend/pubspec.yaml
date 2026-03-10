@@ -16,6 +16,8 @@ dependencies:
   http: ^1.6.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.2
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
   # UI/UX ve Ekstra bileşenler için ileride eklenebilecekler:
   # cupertino_icons: ^1.0.2
   # google_fonts: ^5.0.0
