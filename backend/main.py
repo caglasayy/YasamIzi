@@ -12,6 +12,7 @@ from services.sync_med_service import ilac_takip_motoru
 from services.health_nav_service import navigasyon_motoru
 from services.life_coach_service import yasam_kocu_motoru
 from services.diet_service import diyet_motoru
+from services.enabiz_service import enabiz_motoru
 
 # Veritabanı tablolarını otomatik oluştur (Geliştirme aşaması için kullanışlıdır)
 models.Base.metadata.create_all(bind=engine)
@@ -324,3 +325,25 @@ def sos_gonder(veri: SOSGonderimi, db: Session = Depends(get_db)):
     
     # Gerçek senaryoda burada tüm aile üyelerine PUSH NOTIFICATION gider.
     return {"durum": "SOS_YAYINLANDI", "mesaj": "Tüm aile üyelerine acil durum bildirimi iletildi!"}
+
+# ---------------------------------------------
+# E-NABIZ (TAHLİL ANALİZİ)
+# ---------------------------------------------
+@app.post("/enabiz/tahlil-analiz")
+async def tahlil_analiz_et(dosya: UploadFile = File(...)):
+    """
+    Yüklenen tahlil dökümanını (PDF/JPG) okur ve AI ile analiz eder.
+    """
+    resim_bytelari = await dosya.read()
+    
+    # OCR ile metni oku
+    metin = ocr_motoru.resimden_metin_cikar(resim_bytelari)
+    
+    # Analiz et
+    analiz_sonucu = enabiz_motoru.tahlil_analiz_et(metin)
+    
+    return {
+        "durum": "basarili",
+        "veriler": analiz_sonucu["sonuclar"],
+        "ai_yorumu": analiz_sonucu["ai_yorumu"]
+    }
