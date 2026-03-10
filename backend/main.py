@@ -272,3 +272,55 @@ async def yemek_foto_analiz(dosya: UploadFile = File(...)):
         "tavsiye": analiz_sonucu["tavsiye"],
         "ham_metin": okunan_metin
     }
+
+# ---------------------------------------------
+# AİLE AĞI (KONUM TAKİBİ & SOS)
+# ---------------------------------------------
+class KonumGuncelleme(BaseModel):
+    kullanici_id: int
+    enlem: str
+    boylam: str
+
+class SOSGonderimi(BaseModel):
+    kullanici_id: int
+    mesaj: str
+    enlem: str
+    boylam: str
+
+@app.post("/aile/konum-guncelle")
+def konum_guncelle(veri: KonumGuncelleme, db: Session = Depends(get_db)):
+    kullanici = db.query(models.Kullanici).filter(models.Kullanici.id == veri.kullanici_id).first()
+    if not kullanici: return {"hata": "Kullanici bulunamadi"}
+    
+    kullanici.enlem = veri.enlem
+    kullanici.boylam = veri.boylam
+    db.commit()
+    return {"durum": "basarili"}
+
+@app.get("/aile/uyeler/{aile_id}")
+def aile_uyelerini_getir(aile_id: str, db: Session = Depends(get_db)):
+    uyeler = db.query(models.Kullanici).filter(models.Kullanici.aile_id == aile_id).all()
+    return [
+        {
+            "id": u.id,
+            "ad_soyad": u.ad_soyad,
+            "rol": u.rol,
+            "enlem": u.enlem,
+            "boylam": u.boylam,
+            "son_gorulme": u.son_gorulme
+        } for u in uyeler
+    ]
+
+@app.post("/aile/sos")
+def sos_gonder(veri: SOSGonderimi, db: Session = Depends(get_db)):
+    sos = models.SOSLog(
+        kullanici_id=veri.kullanici_id,
+        mesaj=veri.mesaj,
+        enlem=veri.enlem,
+        boylam=veri.boylam
+    )
+    db.add(sos)
+    db.commit()
+    
+    # Gerçek senaryoda burada tüm aile üyelerine PUSH NOTIFICATION gider.
+    return {"durum": "SOS_YAYINLANDI", "mesaj": "Tüm aile üyelerine acil durum bildirimi iletildi!"}

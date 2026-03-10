@@ -10,7 +10,21 @@ class Kullanici(Base):
     ad_soyad = Column(String)
     eposta = Column(String, unique=True, index=True)
     rol = Column(String, default="ebeveyn") # ebeveyn, cocuk, yasli vb.
+    aile_id = Column(String, index=True) # Aileyi birleştiren ortak ID
+    enlem = Column(String, nullable=True)
+    boylam = Column(String, nullable=True)
+    son_gorulme = Column(DateTime(timezone=True), onupdate=func.now())
     olusturma_tarihi = Column(DateTime(timezone=True), server_default=func.now())
+
+class SOSLog(Base):
+    __tablename__ = "sos_loglari"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    mesaj = Column(String)
+    enlem = Column(String)
+    boylam = Column(String)
+    tarih = Column(DateTime(timezone=True), server_default=func.now())
 
 class Ilac(Base):
     __tablename__ = "ilaclar"
