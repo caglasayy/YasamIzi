@@ -25,7 +25,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/ - commented out because it ignores flutter frontend/lib
 lib64/
 parts/
 sdist/
