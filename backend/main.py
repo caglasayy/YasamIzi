@@ -77,6 +77,26 @@ class IlacOnayistegi(BaseModel):
     kullanici_id: int
     refakatci_token: Optional[str] = None # Gecikme anında refakatçiye (veli) bildirim gitmesi için
 
+@app.get("/ilac-takip/{kullanici_id}", response_model=List[dict])
+def ilaclari_getir(kullanici_id: int, db: Session = Depends(get_db)):
+    """
+    Belirli bir kullanıcının (veya aile üyesinin) ilaç listesini getirir.
+    """
+    ilaclar = db.query(models.Ilac).filter(models.Ilac.kullanici_id == kullanici_id).all()
+    return [
+        {
+            "id": i.id,
+            "isim": i.ilac_adi,
+            "saat": i.alinacak_saat,
+            "talimat": i.talimat,
+            "alindi_mi": i.alindi_mi,
+            "olcek": i.doz,
+            # Mock veriler (Veritabanında şimdilik olmayanlar)
+            "gecikti_mi": False, 
+            "kalan_kutu": 10
+        } for i in ilaclar
+    ]
+
 @app.post("/ilac-takip/onayla")
 def ilac_onayla(veri: IlacOnayistegi, db: Session = Depends(get_db)):
     """
@@ -91,6 +111,35 @@ def ilac_onayla(veri: IlacOnayistegi, db: Session = Depends(get_db)):
     db.commit()
     
     return {"durum": "basarili", "mesaj": f"{ilac.ilac_adi} başarıyla alındı olarak işaretlendi."}
+
+@app.post("/ilac-takip/akilli-ekle")
+async def akilli_ilac_ekle(kullanici_id: int, dosya: UploadFile = File(...), db: Session = Depends(get_db)):
+    """
+    Kutunun fotoğrafından ilaç bilgilerini çıkartır ve kaydeder.
+    """
+    resim_bytelari = await dosya.read()
+    okunan_metin = ocr_motoru.resimden_metin_cikar(resim_bytelari)
+    
+    # Mock Parsing (Gelişmiş NLP yerine anahtar kelime avı)
+    # Gerçek senaryoda GPT-4o-mini gibi bir modelle bu metin JSON'a çevrilir.
+    ilac_adi = "Bilinmeyen İlaç"
+    if "parol" in okunan_metin.lower(): ilac_adi = "Parol"
+    elif "aspirin" in okunan_metin.lower(): ilac_adi = "Aspirin"
+    elif "advil" in okunan_metin.lower(): ilac_adi = "Advil"
+
+    yeni_ilac = models.Ilac(
+        kullanici_id=kullanici_id,
+        ilac_adi=ilac_adi,
+        doz="1 Tablet",
+        alinacak_saat="12:00",
+        talimat="Tok Karnına",
+        alindi_mi=False
+    )
+    db.add(yeni_ilac)
+    db.commit()
+    db.refresh(yeni_ilac)
+    
+    return {"durum": "basarili", "ilac": yeni_ilac, "ham_metin": okunan_metin}
 
 @app.post("/ilac-takip/gecikme-uyarisi")
 def gecikme_uyarisi_tetikle(hasta_adi: str, ilac_adi: str, refakatci_token: str, arka_plan_gorevleri: BackgroundTasks):
