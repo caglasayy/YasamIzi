@@ -462,3 +462,66 @@ def adim_ozet(kullanici_id: int, db: Session = Depends(get_db)):
         models.AdimsayarVerisi.tarih == bugun
     ).first()
     return {"adim_sayisi": kayit.adim_sayisi if kayit else 0}
+
+# ---------------------------------------------
+# PROFİL & YAKINLARIM
+# ---------------------------------------------
+class ProfilGuncelleme(BaseModel):
+    kullanici_id: int
+    kan_grubu: Optional[str] = None
+    alerjiler: Optional[str] = None
+    kronik_hastaliklar: Optional[str] = None
+    boy: Optional[int] = None
+    kilo_profil: Optional[int] = None
+
+class AcilKisiEkleme(BaseModel):
+    kullanici_id: int
+    ad_soyad: str
+    telefon: str
+    yakinlik: str
+
+@app.get("/profil/{kullanici_id}")
+def profil_getir(kullanici_id: int, db: Session = Depends(get_db)):
+    k = db.query(models.Kullanici).filter(models.Kullanici.id == kullanici_id).first()
+    if not k: return {"hata": "Kullanici yok"}
+    
+    acil_kisiler = db.query(models.AcilDurumKisi).filter(models.AcilDurumKisi.kullanici_id == kullanici_id).all()
+    
+    return {
+        "profil": {
+            "ad_soyad": k.ad_soyad,
+            "eposta": k.eposta,
+            "kan_grubu": k.kan_grubu,
+            "alerjiler": k.alerjiler,
+            "kronik_hastaliklar": k.kronik_hastaliklar,
+            "boy": k.boy,
+            "kilo": k.kilo_profil
+        },
+        "acil_kisiler": acil_kisiler
+    }
+
+@app.post("/profil/guncelle")
+def profil_guncelle(veri: ProfilGuncelleme, db: Session = Depends(get_db)):
+    k = db.query(models.Kullanici).filter(models.Kullanici.id == veri.kullanici_id).first()
+    if not k: return {"hata": "Kullanici yok"}
+    
+    if veri.kan_grubu: k.kan_grubu = veri.kan_grubu
+    if veri.alerjiler: k.alerjiler = veri.alerjiler
+    if veri.kronik_hastaliklar: k.kronik_hastaliklar = veri.kronik_hastaliklar
+    if veri.boy: k.boy = veri.boy
+    if veri.kilo_profil: k.kilo_profil = veri.kilo_profil
+    
+    db.commit()
+    return {"durum": "basarili"}
+
+@app.post("/profil/acil-kisi-ekle")
+def acil_kisi_ekle(veri: AcilKisiEkleme, db: Session = Depends(get_db)):
+    yeni_kisi = models.AcilDurumKisi(
+        kullanici_id=veri.kullanici_id,
+        ad_soyad=veri.ad_soyad,
+        telefon=veri.telefon,
+        yakinlik=veri.yakinlik
+    )
+    db.add(yeni_kisi)
+    db.commit()
+    return {"durum": "basarili"}

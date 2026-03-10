@@ -11,10 +11,27 @@ class Kullanici(Base):
     eposta = Column(String, unique=True, index=True)
     rol = Column(String, default="ebeveyn") # ebeveyn, cocuk, yasli vb.
     aile_id = Column(String, index=True) # Aileyi birleştiren ortak ID
+    
+    # Sağlık Profili
+    kan_grubu = Column(String, nullable=True)
+    alerjiler = Column(String, nullable=True)
+    kronik_hastaliklar = Column(String, nullable=True)
+    boy = Column(Integer, nullable=True)
+    kilo_profil = Column(Integer, nullable=True)
+    
     enlem = Column(String, nullable=True)
     boylam = Column(String, nullable=True)
     son_gorulme = Column(DateTime(timezone=True), onupdate=func.now())
     olusturma_tarihi = Column(DateTime(timezone=True), server_default=func.now())
+
+class AcilDurumKisi(Base):
+    __tablename__ = "acil_durum_kisileri"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    ad_soyad = Column(String)
+    telefon = Column(String)
+    yakinlik = Column(String)
 
 class SOSLog(Base):
     __tablename__ = "sos_loglari"
