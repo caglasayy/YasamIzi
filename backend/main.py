@@ -11,6 +11,7 @@ from services.allergy_analyzer_service import alerji_analiz_motoru, AlerjiRiski
 from services.sync_med_service import ilac_takip_motoru
 from services.health_nav_service import navigasyon_motoru
 from services.life_coach_service import yasam_kocu_motoru
+from services.diet_service import diyet_motoru
 
 # Veritabanı tablolarını otomatik oluştur (Geliştirme aşaması için kullanışlıdır)
 models.Base.metadata.create_all(bind=engine)
@@ -199,3 +200,75 @@ def bitki_ilac_etkilesim_kontrolu(veri: EtkilesimKontrolistegi):
     """
     sonuc = yasam_kocu_motoru.etkilesim_kontrol_et(veri.bitki_veya_takviye, veri.aktif_ilaclar)
     return sonuc
+
+# ---------------------------------------------
+# FORMDA KAL (DİYET & KALORİ TAKİBİ)
+# ---------------------------------------------
+class YemekKayitistegi(BaseModel):
+    kullanici_id: int
+    yemek_adi: str
+    kalori: int
+    protein: Optional[int] = 0
+    karbonhidrat: Optional[int] = 0
+    yag: Optional[int] = 0
+
+@app.get("/diyet/ozet/{kullanici_id}")
+def diyet_ozeti_getir(kullanici_id: int, db: Session = Depends(get_db)):
+    """
+    Kullanıcının bugünkü toplam kalori ve makro besin verilerini döner.
+    """
+    import datetime
+    bugun = datetime.date.today()
+    kayitlar = db.query(models.DiyetKaydi).filter(
+        models.DiyetKaydi.kullanici_id == kullanici_id,
+        func.date(models.DiyetKaydi.tarih) == bugun
+    ).all()
+    
+    toplam_kalori = sum(k.kalori for k in kayitlar)
+    toplam_protein = sum(k.protein for k in kayitlar)
+    toplam_karbonhidrat = sum(k.karbonhidrat for k in kayitlar)
+    toplam_yag = sum(k.yag for k in kayitlar)
+    
+    return {
+        "toplam_kalori": toplam_kalori,
+        "toplam_protein": toplam_protein,
+        "toplam_karbonhidrat": toplam_karbonhidrat,
+        "toplam_yag": toplam_yag,
+        "kayit_sayisi": len(kayitlar)
+    }
+
+@app.post("/diyet/yemek-ekle")
+def yemek_ekle(veri: YemekKayitistegi, db: Session = Depends(get_db)):
+    """
+    Yeni bir yemek veya kaçamak kaydı oluşturur.
+    """
+    yeni_kayit = models.DiyetKaydi(
+        kullanici_id=veri.kullanici_id,
+        yemek_adi=veri.yemek_adi,
+        kalori=veri.kalori,
+        protein=veri.protein,
+        karbonhidrat=veri.karbonhidrat,
+        yag=veri.yag
+    )
+    db.add(yeni_kayit)
+    db.commit()
+    db.refresh(yeni_kayit)
+    return {"durum": "basarili", "mesaj": f"{veri.yemek_adi} kaydedildi.", "id": yeni_kayit.id}
+
+@app.post("/diyet/foto-analiz")
+async def yemek_foto_analiz(dosya: UploadFile = File(...)):
+    """
+    Yemek fotoğrafını alır, OCR ile varsa menüdeki ismi okur 
+    veya AI ile yemeği tahmin ederek kalori değerlerini döner.
+    """
+    resim_bytelari = await dosya.read()
+    okunan_metin = ocr_motoru.resimden_metin_cikar(resim_bytelari)
+    
+    analiz_sonucu = diyet_motoru.yemek_analiz_et(okunan_metin)
+    return {
+        "durum": "basarili",
+        "tahmin edilen_yemek": analiz_sonucu["yemek_adi"],
+        "degerler": analiz_sonucu["analiz"],
+        "tavsiye": analiz_sonucu["tavsiye"],
+        "ham_metin": okunan_metin
+    }

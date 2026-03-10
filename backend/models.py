@@ -22,3 +22,15 @@ class Ilac(Base):
     alinacak_saat = Column(String) # Örn: '08:00', '20:00'
     talimat = Column(String) # Aç karnına / Tok karnına
     alindi_mi = Column(Boolean, default=False)
+
+class DiyetKaydi(Base):
+    __tablename__ = "diyet_kayitlari"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    yemek_adi = Column(String)
+    kalori = Column(Integer)
+    protein = Column(Integer, default=0) # Gram cinsinden
+    karbonhidrat = Column(Integer, default=0)
+    yag = Column(Integer, default=0)
+    tarih = Column(DateTime(timezone=True), server_default=func.now())
