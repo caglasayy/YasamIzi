@@ -347,3 +347,58 @@ async def tahlil_analiz_et(dosya: UploadFile = File(...)):
         "veriler": analiz_sonucu["sonuclar"],
         "ai_yorumu": analiz_sonucu["ai_yorumu"]
     }
+
+# ---------------------------------------------
+# CAN DOSTUM (PATİ SAĞLIĞI)
+# ---------------------------------------------
+class HayvanEkleme(BaseModel):
+    kullanici_id: int
+    ad: str
+    tur: str
+    cins: str
+    yas: str
+    kilo: str
+
+class AsiEkleme(BaseModel):
+    hayvan_id: int
+    asi_adi: str
+    tarih: str
+    gelecek_tarih: Optional[str] = None
+
+@app.get("/pati/{kullanici_id}")
+def hayvanlari_getir(kullanici_id: int, db: Session = Depends(get_db)):
+    hayvanlar = db.query(models.Hayvan).filter(models.Hayvan.kullanici_id == kullanici_id).all()
+    return hayvanlar
+
+@app.get("/pati/asilar/{hayvan_id}")
+def asilari_getir(hayvan_id: int, db: Session = Depends(get_db)):
+    asilar = db.query(models.HayvanAsi).filter(models.HayvanAsi.hayvan_id == hayvan_id).all()
+    return asilar
+
+@app.post("/pati/hayvan-ekle")
+def hayvan_ekle(veri: HayvanEkleme, db: Session = Depends(get_db)):
+    yeni_hayvan = models.Hayvan(
+        kullanici_id=veri.kullanici_id,
+        ad=veri.ad,
+        tur=veri.tur,
+        cins=veri.cins,
+        yas=veri.yas,
+        kilo=veri.kilo
+    )
+    db.add(yeni_hayvan)
+    db.commit()
+    db.refresh(yeni_hayvan)
+    return yeni_hayvan
+
+@app.post("/pati/asi-ekle")
+def asi_ekle(veri: AsiEkleme, db: Session = Depends(get_db)):
+    yeni_asi = models.HayvanAsi(
+        hayvan_id=veri.hayvan_id,
+        asi_adi=veri.asi_adi,
+        tarih=veri.tarih,
+        gelecek_tarih=veri.gelecek_tarih
+    )
+    db.add(yeni_asi)
+    db.commit()
+    db.refresh(yeni_asi)
+    return yeni_asi

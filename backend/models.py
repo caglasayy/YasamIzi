@@ -26,6 +26,28 @@ class SOSLog(Base):
     boylam = Column(String)
     tarih = Column(DateTime(timezone=True), server_default=func.now())
 
+class Hayvan(Base):
+    __tablename__ = "hayvanlar"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    ad = Column(String)
+    tur = Column(String) # Köpek, Kedi vb.
+    cins = Column(String)
+    yas = Column(String)
+    kilo = Column(String)
+    foto_url = Column(String, nullable=True)
+
+class HayvanAsi(Base):
+    __tablename__ = "hayvan_asilar"
+
+    id = Column(Integer, primary_key=True, index=True)
+    hayvan_id = Column(Integer, ForeignKey("hayvanlar.id"))
+    asi_adi = Column(String)
+    tarih = Column(String)
+    gelecek_tarih = Column(String, nullable=True)
+    tamamlandi = Column(Boolean, default=False)
+
 class Ilac(Base):
     __tablename__ = "ilaclar"
 
