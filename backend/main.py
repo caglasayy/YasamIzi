@@ -402,3 +402,63 @@ def asi_ekle(veri: AsiEkleme, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(yeni_asi)
     return yeni_asi
+
+# ---------------------------------------------
+# MINDFULNESS & AKTİVİTE
+# ---------------------------------------------
+class MindfulnessEkleme(BaseModel):
+    kullanici_id: int
+    tip: str
+    sure_dakika: int
+
+class AdimGuncelleme(BaseModel):
+    kullanici_id: int
+    adim_sayisi: int
+
+@app.post("/mindfulness/kaydet")
+def mindfulness_kaydet(veri: MindfulnessEkleme, db: Session = Depends(get_db)):
+    yeni_kayit = models.MindfulnessKaydi(
+        kullanici_id=veri.kullanici_id,
+        tip=veri.tip,
+        sure_dakika=veri.sure_dakika
+    )
+    db.add(yeni_kayit)
+    db.commit()
+    return {"durum": "basarili"}
+
+@app.get("/mindfulness/ozet/{kullanici_id}")
+def mindfulness_ozet(kullanici_id: int, db: Session = Depends(get_db)):
+    kayitlar = db.query(models.MindfulnessKaydi).filter(models.MindfulnessKaydi.kullanici_id == kullanici_id).all()
+    toplam_sure = sum([k.sure_dakika for k in kayitlar])
+    return {"toplam_dakika": toplam_sure, "seans_sayisi": len(kayitlar)}
+
+@app.post("/aktivite/adim-guncelle")
+def adim_guncelle(veri: AdimGuncelleme, db: Session = Depends(get_db)):
+    # Bugünün adım verisini bul veya oluştur
+    bugun = date.today()
+    kayit = db.query(models.AdimsayarVerisi).filter(
+        models.AdimsayarVerisi.kullanici_id == veri.kullanici_id,
+        models.AdimsayarVerisi.tarih == bugun
+    ).first()
+    
+    if kayit:
+        kayit.adim_sayisi = veri.adim_sayisi
+    else:
+        kayit = models.AdimsayarVerisi(
+            kullanici_id=veri.kullanici_id,
+            adim_sayisi=veri.adim_sayisi,
+            tarih=bugun
+        )
+        db.add(kayit)
+    
+    db.commit()
+    return {"durum": "basarili", "yeni_adim": kayit.adim_sayisi}
+
+@app.get("/aktivite/adim-ozet/{kullanici_id}")
+def adim_ozet(kullanici_id: int, db: Session = Depends(get_db)):
+    bugun = date.today()
+    kayit = db.query(models.AdimsayarVerisi).filter(
+        models.AdimsayarVerisi.kullanici_id == kullanici_id,
+        models.AdimsayarVerisi.tarih == bugun
+    ).first()
+    return {"adim_sayisi": kayit.adim_sayisi if kayit else 0}

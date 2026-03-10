@@ -48,6 +48,23 @@ class HayvanAsi(Base):
     gelecek_tarih = Column(String, nullable=True)
     tamamlandi = Column(Boolean, default=False)
 
+class MindfulnessKaydi(Base):
+    __tablename__ = "mindfulness_kayitlari"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    tip = Column(String) # Meditasyon, Nefes, Yoga
+    sure_dakika = Column(Integer)
+    tarih = Column(DateTime(timezone=True), server_default=func.now())
+
+class AdimsayarVerisi(Base):
+    __tablename__ = "adimsayar_verileri"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kullanici_id = Column(Integer, ForeignKey("kullanicilar.id"))
+    adim_sayisi = Column(Integer)
+    tarih = Column(Date, server_default=func.current_date())
+
 class Ilac(Base):
     __tablename__ = "ilaclar"
 
