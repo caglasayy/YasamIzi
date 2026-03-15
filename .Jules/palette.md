@@ -1,0 +1,3 @@
+## 2024-03-15 - Flutter Web Boilerplate Cleanup
+**Learning:** Default Flutter Web projects ship with boilerplate `<title>`, missing `lang` attributes, and generic manifest files. This causes screen readers to mispronounce text and displays poor tab titles.
+**Action:** Always check `web/index.html` and `web/manifest.json` in Flutter Web projects to ensure proper localized `lang` attribute, brand-consistent `<title>`, `<noscript>` fallback, and accurate PWA manifest details.
