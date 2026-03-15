@@ -1,11 +1,11 @@
 {
-    "name": "yasamizi",
-    "short_name": "yasamizi",
+    "name": "Yaşamİzi",
+    "short_name": "Yaşamİzi",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FDFDFD",
+    "theme_color": "#00C853",
+    "description": "Yaşamİzi: Kişisel Sağlık ve Wellness Uygulaması",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
