@@ -1,0 +1,3 @@
+## 2024-05-14 - Flutter Web Initial Accessibility
+**Learning:** Flutter Web applications mount directly into an almost empty index.html, meaning standard screen reader parsing relies heavily on the `<html>` tag's `lang` attribute. The lack of a `lang` attribute can severely degrade accessibility, causing screen readers to use the wrong language (often English) for a localized app (like Turkish).
+**Action:** Always verify that `frontend/web/index.html` contains the correct `<html lang="tr">` attribute in Flutter Web projects, and provide a `<noscript>` tag, as Flutter Web requires JS to render anything.
