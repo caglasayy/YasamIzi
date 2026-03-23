@@ -1,0 +1,3 @@
+## 2024-05-14 - Add accessibility lang attribute and noscript to main HTML file
+**Learning:** Flutter Web applications mount entirely within a very bare `index.html`. Since the UI is rendered inside a canvas (or similar structure by Flutter web), standard HTML attributes like `lang` and `noscript` fallbacks are easily overlooked but are critical.
+**Action:** When working with Flutter Web projects, always verify the `web/index.html` file includes basic HTML document accessibility attributes like `lang` for screen reader language targeting and a `<noscript>` tag since the app entirely depends on JS to bootstrap.
