@@ -1,0 +1,3 @@
+## 2024-03-26 - Flutter Web Accessibility Foundation
+**Learning:** Flutter Web applications mount directly into an almost empty index.html, meaning standard accessibility features like screen reader language targeting require explicit HTML attributes (e.g., `<html lang="tr">`) and `<noscript>` tags for fallback in `frontend/web/index.html`. These are often overlooked in default Flutter builds.
+**Action:** Always check the root `web/index.html` file in Flutter Web projects for basic HTML accessibility attributes (lang, title) and provide a `<noscript>` fallback since the entire app relies on JavaScript execution.
