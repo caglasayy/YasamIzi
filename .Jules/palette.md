@@ -1,0 +1,3 @@
+## 2024-05-18 - Improve accessibility and fallbacks for Flutter Web index.html
+**Learning:** Because Flutter Web apps mount directly into an almost empty `index.html`, standard accessibility features (like screen reader language targeting via `<html lang="tr">`) and `<noscript>` fallbacks are completely missing by default. This makes the initial load inaccessible for non-English speakers and uninformative for users without JS.
+**Action:** Always check the root `index.html` of Flutter web apps to inject an appropriate `lang` attribute, `<noscript>` guidance, and meaningful `<title>` metadata instead of relying solely on the Dart layer.
