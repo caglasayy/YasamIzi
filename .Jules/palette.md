@@ -1,0 +1,3 @@
+## 2024-05-24 - [Add Accessibility & JavaScript Fallback]
+**Learning:** Because Flutter Web apps heavily rely on rendering via canvas or WebGL and require JavaScript, the default `index.html` is essentially a blank page if JS is disabled or fails to load. This creates a terrible experience for some users and is completely opaque to screen readers if the `lang` attribute is missing.
+**Action:** Always ensure the root `<html>` tag has the correct `lang` attribute (e.g., `lang="tr"`) for screen reader support. Always include a styled `<noscript>` tag with a clear, localized message explaining that JavaScript is required, using the brand's colors and fonts so the fallback feels like part of the application, not a broken page.
