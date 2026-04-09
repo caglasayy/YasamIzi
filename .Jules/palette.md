@@ -1,0 +1,3 @@
+## 2024-03-24 - Document Accessibility for Flutter Web
+**Learning:** Flutter Web applications mount directly into an almost empty `index.html`. Because of this, foundational accessibility features like document language targeting (e.g., `<html lang="tr">`) and `<noscript>` tags for JavaScript-disabled fallback cannot be handled within Flutter/Dart code itself and must be explicitly added to `frontend/web/index.html`.
+**Action:** Always check the root `index.html` file in Flutter Web projects to ensure baseline document-level accessibility features are implemented, rather than relying on Flutter widgets alone.
