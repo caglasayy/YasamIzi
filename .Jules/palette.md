@@ -1,0 +1,3 @@
+## 2024-04-12 - Accessibility in Flutter Web Containers
+**Learning:** Flutter Web applications mount directly into an almost empty index.html, meaning standard accessibility features like screen reader language targeting and JavaScript-disabled fallbacks are not provided out of the box. Screen readers may misinterpret the language without an explicit HTML attribute, and users without JS see a blank screen.
+**Action:** Always add explicit HTML attributes (e.g., `<html lang="tr">`) and `<noscript>` tags for fallback in `frontend/web/index.html` to provide basic accessibility and user feedback before the Flutter app initializes.
