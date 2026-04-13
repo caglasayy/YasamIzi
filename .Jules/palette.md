@@ -1,0 +1,3 @@
+## 2024-05-24 - explicit HTML accessibility attributes and noscript fallbacks
+**Learning:** Flutter Web applications mount directly into an almost empty index.html. Standard accessibility features like screen reader language targeting require explicit HTML attributes (e.g., `<html lang="tr">`) and `<noscript>` tags for fallback to ensure users without JavaScript or on older devices receive a graceful error.
+**Action:** Always verify the base `index.html` file of Flutter web apps for fundamental accessibility attributes (lang tags) and `<noscript>` fallbacks before assuming the Flutter framework handles them.
