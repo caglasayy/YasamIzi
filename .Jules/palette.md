@@ -1,0 +1,3 @@
+## 2024-05-24 - Flutter Web Accessibility Baseline
+**Learning:** Empty-root Flutter Web applications rely almost entirely on JavaScript to render content into the DOM. Without explicit HTML attributes like `<html lang="tr">` in `index.html`, screen readers may assume the wrong language profile, breaking text-to-speech for Turkish content. Furthermore, users with disabled JS get a completely blank page.
+**Action:** Always inject `lang` attributes into the root `<html>` tag and provide localized `<noscript>` fallbacks for Flutter Web apps to ensure baseline accessibility before the app engine initializes.
