@@ -1,0 +1,3 @@
+## 2024-05-18 - Flutter Web Base Accessibility and Fallbacks
+**Learning:** Flutter Web applications mount into an empty `index.html` structure, meaning core screen reader hints (like HTML language) are missing by default. Furthermore, since the entire UI requires JavaScript, users without it enabled (or due to corporate policies) receive a completely blank screen without explanation.
+**Action:** Always verify `lang="tr"` attribute exists on the `<html>` root for Turkish apps, and ensure a styled `<noscript>` block is present in the `<body>` to gracefully degrade the experience and inform the user why the app isn't loading.
