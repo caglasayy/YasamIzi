@@ -1,0 +1,3 @@
+## 2024-05-18 - Essential Screen Reader Targeting & Fallbacks in Flutter Web
+**Learning:** Because Flutter Web apps mount directly into an almost empty index.html, standard accessibility features require explicit handling at the root level before Flutter initializes. This includes adding standard HTML attributes like `lang="tr"` on the `<html>` tag to ensure screen readers use the correct pronunciation profile from the start, and providing a helpful `<noscript>` tag for when JavaScript is disabled (which fails silently otherwise).
+**Action:** Always check the underlying root `index.html` structure of Flutter web builds to inject basic accessibility and usability safety nets prior to the Dart initialization pipeline.
