@@ -1,0 +1,3 @@
+## 2024-05-18 - Flutter Web HTML Structure Insights
+**Learning:** Flutter Web applications mount directly into a mostly empty `index.html`. This means standard baseline accessibility features, such as screen reader language targeting (`<html lang="tr">`) and fallback experiences for disabled JavaScript (`<noscript>`), must be explicitly added to `frontend/web/index.html` rather than handled within the Dart/Flutter widget tree.
+**Action:** When working on Flutter Web projects, always verify and update the root `index.html` for base accessibility metadata and `<noscript>` fallbacks before focusing solely on Flutter widgets.
