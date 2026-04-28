@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing Accessibility Foundation in Flutter Web index.html
+**Learning:** Because Flutter Web apps mount onto an almost empty `index.html`, standard accessibility features that screen readers and non-JS clients depend on must be explicitly defined in that root HTML file. The `lang` attribute was missing on the `<html>` tag, causing screen readers to misinterpret the language (Turkish). Furthermore, there was no `<noscript>` fallback, meaning users with JS disabled saw an entirely blank page without explanation.
+**Action:** Always verify the root `index.html` of Flutter Web projects has appropriate `<html lang="xx">` targeting and `<noscript>` fallback messages. I added `lang="tr"` and a styled `<noscript>` block to `frontend/web/index.html`.
