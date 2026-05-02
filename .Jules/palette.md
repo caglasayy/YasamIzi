@@ -1,0 +1,3 @@
+## 2024-05-18 - Screen Reader Language Targeting and NoScript Fallbacks
+**Learning:** Flutter Web applications mount directly into an almost empty index.html. Standard accessibility features like screen reader language targeting require explicit HTML attributes (e.g., `<html lang="tr">`) and `<noscript>` tags for fallback in `frontend/web/index.html`.
+**Action:** When working on Flutter web apps, always ensure the base `index.html` has the correct `lang` attribute and a helpful `<noscript>` fallback for users with JavaScript disabled.
