@@ -1,0 +1,3 @@
+## 2024-05-15 - Flutter Web Initialization Accessibility
+**Learning:** Flutter Web applications mount into an almost empty `index.html`. Since the entire UI is rendered via Canvas/DOM nodes by JavaScript, standard accessibility features at the document level require explicit HTML attributes (like `<html lang="tr">` for screen reader targeting) and `<noscript>` tags for fallback states if JavaScript is disabled or fails to load.
+**Action:** Always verify that `web/index.html` contains appropriate `lang` attributes on the `<html>` tag and a descriptive `<noscript>` fallback, as these are not generated automatically by Flutter.
