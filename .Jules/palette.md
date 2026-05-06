@@ -1,0 +1,3 @@
+## 2024-05-18 - Missing Language Attribute and JS Fallback
+**Learning:** Flutter web applications mount into an almost empty `index.html`. They rely heavily on JavaScript. By default, standard accessibility features like screen reader language targeting (`<html lang="tr">`) and JS disabled fallbacks (`<noscript>`) are absent and must be manually configured in the web entry point.
+**Action:** When working on Flutter web projects, always explicitly define the `<html lang="...">` attribute to ensure proper screen reader pronunciation and include a user-friendly `<noscript>` tag that explains the necessity of JavaScript, applying the brand's styling for consistency.
