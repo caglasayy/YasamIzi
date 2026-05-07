@@ -1,0 +1,3 @@
+## 2026-05-07 - Add explicit HTML language and noscript fallback to Flutter web apps
+**Learning:** Flutter Web applications mount directly into an almost empty `index.html`. This means standard accessibility features like screen reader language targeting (`<html lang="tr">`) and fallback for when JavaScript is disabled (`<noscript>`) are not generated automatically by Flutter and must be explicitly added to the index HTML file.
+**Action:** Add `<html lang="tr">` and `<noscript>` blocks directly to `frontend/web/index.html` to enhance baseline accessibility for screen readers and users without JavaScript.
