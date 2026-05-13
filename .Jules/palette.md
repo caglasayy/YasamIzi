@@ -1,0 +1,3 @@
+## 2024-05-19 - Missing Accessibility Targeting and Fallbacks in Flutter Web Root
+**Learning:** Flutter Web applications mount directly into `index.html`. Since the DOM is largely generated dynamically, the root `<html>` tag often lacks accessibility attributes like `lang`, breaking screen reader targeting. Furthermore, if JavaScript is disabled or fails to load, users are left with a blank screen.
+**Action:** Always ensure `index.html` has a target language (e.g., `<html lang="tr">`) and a styled `<noscript>` block that matches the app's design system (e.g., Neumorphic depth and Light Mode palette) to provide helpful guidance when scripts fail.
